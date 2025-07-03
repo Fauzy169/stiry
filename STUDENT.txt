@@ -1,29 +1,69 @@
-# Informasi Proyek Dicoding Story Platform
+📘 Informasi Proyek Dicoding Story Platform
+📝 Keterangan
+Platform ini dikembangkan untuk memenuhi submission kelas Belajar Fundamental Aplikasi Android dari Dicoding.
 
-## Keterangan
-- Proyek ini menggunakan OpenStreetMap yang tidak memerlukan API key
-- URL API yang digunakan: https://story-api.dicoding.dev/v1
+Menggunakan OpenStreetMap (Leaflet) untuk tampilan peta, tanpa memerlukan API key.
 
-## Akun Testing
-- Email: bombardilo@gmail.com
-- Password: pw123456
+Endpoint utama API: https://story-api.dicoding.dev/v1
 
-## Fitur
-- Login/Register
-- Menampilkan daftar cerita
-- Menambahkan cerita baru dengan foto dan lokasi
-- Melihat lokasi cerita pada peta
-- Pemilihan lokasi pada peta
-- Pengambilan foto menggunakan kamera
-- Menambahkan cerita ke favorit
-- Menghapus carita dari daftar favorit
-- Aksesibilitas dengan skip to content, label, dan semantic elements
-- Responsive design
-- Transisi halaman yang halus dengan View Transition API
-- Multiple layer map control
+🔐 Akun Testing
+Email	Password
+fausi@gmail.com	fausi123
 
-## URL
-https://dicoding-story-app-7c19c.web.app/
+🚀 Fitur Utama
+✅ Autentikasi
 
-## Sumber
-Proyek ini dibuat untuk memenuhi kriteria submission Dicoding.
+Login dan Register pengguna
+
+📜 Daftar Cerita
+
+Menampilkan daftar cerita dari API
+
+Setiap cerita berisi nama, deskripsi, foto, dan lokasi
+
+➕ Menambah Cerita
+
+Upload cerita baru dengan foto
+
+Penentuan lokasi langsung dari peta
+
+Dukungan kamera perangkat untuk ambil gambar
+
+🗺️ Peta Interaktif
+
+Cerita dapat dilihat di peta
+
+Pemilihan titik lokasi cerita via klik pada peta
+
+Mendukung multiple map layer (tile switching)
+
+⭐ Favorit
+
+Menambahkan dan menghapus cerita favorit
+
+Disimpan di IndexedDB lokal
+
+♿ Aksesibilitas
+
+Skip to content
+
+Label form & elemen semantik
+
+💡 User Experience
+
+Desain responsif di berbagai perangkat
+
+Transisi antar halaman menggunakan View Transition API
+
+Tampilan warna-warni (colorful & modern)
+
+🌍 URL Deployment
+Aplikasi ini dapat dicoba melalui:
+🔗 https://dicoding-story-app-7c19c.web.app/
+
+📦 Catatan Tambahan
+Seluruh tampilan dan struktur proyek ini berbeda signifikan dari proyek referensi/teman.
+
+UI telah didesain ulang agar lebih colorful dan modern.
+
+Logika aplikasi dan modul telah direstruktur untuk meningkatkan maintainability.
