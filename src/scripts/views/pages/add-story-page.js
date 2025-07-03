@@ -9,6 +9,11 @@ const AddStoryPage = {
       title: "Tambah Cerita Baru",
       content: `
         <form id="addStoryForm" class="add-story-form">
+        <div class="form-group">
+            <label for="name" class="form-label">Judul Cerita</label>
+            <input id="name" class="form-input" placeholder="Masukkan judul cerita" required />
+          </div>
+          
           <div class="form-group">
             <label class="form-label">Foto</label>
             <div class="camera-container">
