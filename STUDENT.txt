@@ -1,0 +1,29 @@
+# Informasi Proyek Dicoding Story Platform
+
+## Keterangan
+- Proyek ini menggunakan OpenStreetMap yang tidak memerlukan API key
+- URL API yang digunakan: https://story-api.dicoding.dev/v1
+
+## Akun Testing
+- Email: bombardilo@gmail.com
+- Password: pw123456
+
+## Fitur
+- Login/Register
+- Menampilkan daftar cerita
+- Menambahkan cerita baru dengan foto dan lokasi
+- Melihat lokasi cerita pada peta
+- Pemilihan lokasi pada peta
+- Pengambilan foto menggunakan kamera
+- Menambahkan cerita ke favorit
+- Menghapus carita dari daftar favorit
+- Aksesibilitas dengan skip to content, label, dan semantic elements
+- Responsive design
+- Transisi halaman yang halus dengan View Transition API
+- Multiple layer map control
+
+## URL
+https://dicoding-story-app-7c19c.web.app/
+
+## Sumber
+Proyek ini dibuat untuk memenuhi kriteria submission Dicoding.

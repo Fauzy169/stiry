@@ -1,0 +1,21 @@
+{
+  "name": "story-app-pwa",
+  "version": "1.0.0",
+  "description": "Story App dengan fitur Progressive Web App",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "author": "Adam Refaldi",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^4.3.9",
+    "vite-plugin-pwa": "^1.0.0"
+  },
+  "dependencies": {
+    "idb": "^7.1.1",
+    "leaflet": "^1.9.4"
+  }
+}
