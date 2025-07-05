@@ -1,14 +1,14 @@
 {
-  "name": "story-app-pwa",
+  "name": "sharestory-app",
   "version": "1.0.0",
-  "description": "Story App dengan fitur Progressive Web App",
+  "description": "App for sharing stories with location and photos",
   "main": "index.js",
-  "scripts": {
-    "start-dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "author": "Adam Refaldi",
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview"
+},
+  "author": "Ahmad Fausi Febrian",
   "license": "ISC",
   "devDependencies": {
     "vite": "^4.3.9",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "idb": "^7.1.1",
-    "leaflet": "^1.9.4"
+    "leaflet": "^1.9.4",
+    "workbox-precaching": "^7.3.0"
   }
 }

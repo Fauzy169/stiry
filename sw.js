@@ -1,76 +1,48 @@
-importScripts(
-  "https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js"
-);
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js");
 
-workbox.setConfig({ debug: true });
+workbox.setConfig({ debug: false });
 
-// Force update existing clients
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    Promise.all([
-      // Clear old caches
-      caches.keys().then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cache) => {
-            console.log("Deleting cache:", cache);
-            return caches.delete(cache);
-          })
-        );
-      }),
-      // Take control of all pages immediately
-      clients.claim(),
-    ])
-  );
-});
+// ✅ PENTING: Diperlukan oleh injectManifest
+workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+// Import custom event listeners
+function eventListeners() {
+  self.addEventListener("push", (event) => {
+    let notificationData = {};
+    try {
+      notificationData = event.data.json();
+    } catch (e) {
+      notificationData = {
+        title: "Story Baru",
+        options: {
+          body: event.data?.text() || "Ada story baru tersedia",
+          icon: "/icons/icon-192x192.png",
+          badge: "/icons/icon-72x72.png",
+          data: { url: "/" },
+        },
+      };
+    }
 
-// Handle push notifications
-self.addEventListener("push", (event) => {
-  console.log("Push notification received:", event);
-
-  let notificationData = {};
-
-  try {
-    notificationData = event.data.json();
-    console.log("Parsed notification data:", notificationData);
-  } catch (e) {
-    console.error("Error parsing notification data:", e);
-    notificationData = {
-      title: "Dicoding Story",
-      options: {
-        body: event.data ? event.data.text() : "Push message received",
-        icon: "/icons/icon-192x192.png",
-        badge: "/icons/icon-72x72.png",
+    const options = {
+      ...notificationData.options,
+      icon: notificationData.options?.icon || "/icons/icon-192x192.png",
+      badge: notificationData.options?.badge || "/icons/icon-72x72.png",
+      vibrate: [100, 50, 100],
+      data: {
+        dateOfArrival: Date.now(),
+        primaryKey: 1,
+        url: notificationData.options?.url || "/",
       },
     };
-  }
 
-  const options = {
-    ...(notificationData.options || {}),
-    icon: notificationData.options?.icon || "/icons/icon-192x192.png",
-    badge: notificationData.options?.badge || "/icons/icon-72x72.png",
-    vibrate: [100, 50, 100],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1,
-      url: notificationData.options?.url || "/",
-    },
-  };
+    event.waitUntil(
+      self.registration.showNotification(notificationData.title, options)
+    );
+  });
 
-  event.waitUntil(
-    self.registration.showNotification(notificationData.title, options)
-  );
-});
-
-// Handle notification click
-self.addEventListener("notificationclick", (event) => {
-  console.log("Notification clicked:", event);
-
-  event.notification.close();
-
-  event.waitUntil(
-    clients
-      .matchAll({ type: "window", includeUncontrolled: true })
-      .then((clientList) => {
+  self.addEventListener("notificationclick", (event) => {
+    event.notification.close();
+    event.waitUntil(
+      clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
         const hadWindowToFocus = clientList.some((client) => {
           if (client.url === event.notification.data.url) {
             client.focus();
@@ -78,15 +50,13 @@ self.addEventListener("notificationclick", (event) => {
           }
           return false;
         });
-
         if (!hadWindowToFocus) {
-          clients
-            .openWindow(event.notification.data.url)
-            .then((windowClient) => windowClient && windowClient.focus());
+          clients.openWindow(event.notification.data.url).then((windowClient) => windowClient?.focus());
         }
       })
-  );
-});
+    );
+  });
+}
 
 // Skip waiting
 self.addEventListener("message", (event) => {
@@ -219,36 +189,6 @@ workbox.routing.registerRoute(
     ],
   })
 );
-
-workbox.precaching.precacheAndRoute([
-  { url: "/", revision: "1" },
-  { url: "/index.html", revision: "1" },
-  { url: "/offline.html", revision: "1" },
-  // Styles
-  { url: "/src/styles/main.css", revision: "2" },
-  { url: "/src/styles/responsive.css", revision: "2" },
-  { url: "/src/styles/indexeddb-component.css", revision: "2" },
-  { url: "/src/styles/notification.css", revision: "2" },
-  { url: "/src/styles/not-found.css", revision: "2" },
-  // Scripts
-  { url: "/src/scripts/app.js", revision: "2" },
-  { url: "/src/scripts/routes/routes.js", revision: "2" },
-  { url: "/src/scripts/routes/url-parser.js", revision: "2" },
-  { url: "/src/scripts/views/app-shell.js", revision: "2" },
-  { url: "/src/scripts/utils/drawer-initiator.js", revision: "2" },
-  { url: "/src/scripts/views/pages/not-found-page.js", revision: "2" },
-  // Icons & Images
-  { url: "/src/public/icons/icon-72x72.png", revision: "2" },
-  { url: "/src/public/icons/icon-96x96.png", revision: "2" },
-  { url: "/src/public/icons/icon-128x128.png", revision: "2" },
-  { url: "/src/public/icons/icon-144x144.png", revision: "2" },
-  { url: "/src/public/icons/icon-152x152.png", revision: "2" },
-  { url: "/src/public/icons/icon-192x192.png", revision: "2" },
-  { url: "/src/public/icons/icon-384x384.png", revision: "2" },
-  { url: "/src/public/icons/icon-512x512.png", revision: "2" },
-  { url: "/src/public/icons/add-story.png", revision: "2" },
-  { url: "/src/public/icons/favorite.png", revision: "2" },
-]);
 
 workbox.routing.registerRoute(
   ({ request }) =>

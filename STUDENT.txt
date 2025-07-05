@@ -59,7 +59,7 @@ Tampilan warna-warni (colorful & modern)
 
 🌍 URL Deployment
 Aplikasi ini dapat dicoba melalui:
-🔗 https://dicoding-story-app-7c19c.web.app/
+🔗 https:https://submsiionintermediate.netlify.app/#/
 
 📦 Catatan Tambahan
 Seluruh tampilan dan struktur proyek ini berbeda signifikan dari proyek referensi/teman.

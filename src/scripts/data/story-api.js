@@ -83,7 +83,6 @@ class StoryApi {
       }
 
       const formData = new FormData();
-
       formData.append("description", description);
       formData.append("photo", photoFile);
       if (lat) formData.append("lat", lat);

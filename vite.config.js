@@ -158,7 +158,8 @@ export default defineConfig({
         enabled: true,
         type: "module",
       },
-      strategies: "generateSW",
+      strategies: "injectManifest",
+      srcDir: ".",
       filename: "sw.js",
       sw: {
         scriptInjectFirstLine: `

@@ -9,11 +9,7 @@ const AddStoryPage = {
       title: "Tambah Cerita Baru",
       content: `
         <form id="addStoryForm" class="add-story-form">
-        <div class="form-group">
-            <label for="name" class="form-label">Judul Cerita</label>
-            <input id="name" class="form-input" placeholder="Masukkan judul cerita" required />
-          </div>
-          
+
           <div class="form-group">
             <label class="form-label">Foto</label>
             <div class="camera-container">
@@ -100,13 +96,12 @@ const AddStoryPage = {
     const form = document.querySelector("#addStoryForm");
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
-      const description = document.querySelector("#description").value;
+      const description = document.querySelector("#description").value.trim();
 
       if (!description) {
-        alert("Semua kolom harus diisi!");
-        return;
-      }
+  alert("Cerita tidak boleh kosong!");
+  return;
+}
 
       if (!this._imageBase64) {
         alert("Silakan ambil foto terlebih dahulu!");
@@ -145,7 +140,6 @@ const AddStoryPage = {
           try {
             const registration = await navigator.serviceWorker.ready;
             await registration.showNotification("Story Baru", {
-              body: `Story baru telah dibuat dengan deskripsi: ${description}`,
               icon: "/icons/icon-192x192.png",
               badge: "/icons/icon-72x72.png",
               vibrate: [100, 50, 100],

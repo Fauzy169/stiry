@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dicoding Story Platform - Mode Offline" />
+    <title>Dicoding Story Platform - Mode Offline</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .offline-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        color: #4a90e2;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 16px;
+        color: #2c3e50;
+      }
+
+      p {
+        font-size: 16px;
+        margin-bottom: 24px;
+      }
+
+      .btn {
+        display: inline-block;
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 16px;
+        margin-top: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #3a7bca;
+      }
+
+      .cached-stories {
+        margin-top: 32px;
+        text-align: left;
+        background: white;
+        padding: 16px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .story-list {
+        list-style: none;
+        margin-top: 16px;
+      }
+
+      .story-item {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .story-item:last-child {
+        border-bottom: none;
+      }
+
+      .notification {
+        margin-top: 32px;
+        padding: 16px;
+        background-color: #fef3e8;
+        border-radius: 8px;
+        border-left: 4px solid #ed8936;
+      }
+    </style>
+  <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
+  <body>
+    <div class="container">
+      <div class="offline-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22.61 16.95A5 5 0 0 0 18 10h-1.26a8 8 0 0 0-7.05-6M5 5a8 8 0 0 0 4 15h9a5 5 0 0 0 1.7-.3"></path>
+          <path d="M1 1L23 23"></path>
+        </svg>
+      </div>
+      <h1>Mode Offline Aktif</h1>
+      <p>
+        Anda sedang dalam mode offline. Beberapa fitur mungkin tidak tersedia
+        sampai koneksi internet pulih.
+      </p>
+      <button class="btn" id="tryAgainBtn">Coba Lagi</button>
+
+      <div class="cached-stories">
+        <h2>Cerita Tersimpan</h2>
+        <p>
+          Anda masih dapat melihat cerita yang telah disimpan sebelumnya.
+        </p>
+        <div id="storedStoriesList">
+          <p>Memuat cerita tersimpan...</p>
+        </div>
+      </div>
+
+      <div class="notification">
+        <p>
+          Fitur tambah cerita baru tidak tersedia dalam mode offline. Silakan
+          hubungkan ke internet untuk menambahkan cerita baru.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        const tryAgainBtn = document.getElementById('tryAgainBtn');
+        const storedStoriesList = document.getElementById('storedStoriesList');
+
+        // Try to reconnect when the button is clicked
+        tryAgainBtn.addEventListener('click', () => {
+          window.location.href = '/';
+        });
+
+        // Try to load stored stories from IndexedDB if available
+        try {
+          // First, check if IndexedDB is available
+          if (!('indexedDB' in window)) {
+            storedStoriesList.innerHTML = '<p>Tidak ada cerita tersimpan yang tersedia.</p>';
+            return;
+          }
+
+          // Open the database
+          const dbPromise = indexedDB.open('story-app-db', 1);
+          
+          dbPromise.onsuccess = function(event) {
+            const db = event.target.result;
+            
+            // Check if the object store exists
+            if (!db.objectStoreNames.contains('stories')) {
+              storedStoriesList.innerHTML = '<p>Tidak ada cerita tersimpan yang tersedia.</p>';
+              return;
+            }
+            
+            // Get all stories from the object store
+            const transaction = db.transaction('stories', 'readonly');
+            const objectStore = transaction.objectStore('stories');
+            const getAllRequest = objectStore.getAll();
+            
+            getAllRequest.onsuccess = function() {
+              const stories = getAllRequest.result;
+              
+              if (stories && stories.length > 0) {
+                // Display the stored stories
+                const storyListHtml = `
+                  <ul class="story-list">
+                    ${stories.map(story => `
+                      <li class="story-item">
+                        <h3>${story.name}</h3>
+                        <p>${story.description ? story.description.slice(0, 100) + '...' : 'Tidak ada deskripsi'}</p>
+                      </li>
+                    `).join('')}
+                  </ul>
+                `;
+                storedStoriesList.innerHTML = storyListHtml;
+              } else {
+                storedStoriesList.innerHTML = '<p>Tidak ada cerita tersimpan yang tersedia.</p>';
+              }
+            };
+            
+            getAllRequest.onerror = function(event) {
+              console.error('Error getting stories from IndexedDB:', event.target.error);
+              storedStoriesList.innerHTML = '<p>Tidak dapat memuat cerita tersimpan.</p>';
+            };
+          };
+          
+          dbPromise.onerror = function(event) {
+            console.error('Error opening IndexedDB:', event.target.error);
+            storedStoriesList.innerHTML = '<p>Tidak dapat mengakses cerita tersimpan.</p>';
+          };
+          
+        } catch (error) {
+          console.error('Error accessing IndexedDB:', error);
+          storedStoriesList.innerHTML = '<p>Tidak dapat mengakses cerita tersimpan.</p>';
+        }
+      });
+    </script>
+  </body>
+</html>

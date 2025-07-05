@@ -10,43 +10,46 @@ class StoryUploadHandler {
     return this._apiService.checkAuthentication();
   }
 
- async uploadStory({ description, photoFile, lat, lon }) {
+  async uploadStory({ description, photoFile, lat, lon }) {
     try {
       if (!this.isUserLoggedIn()) {
-        alert("Anda harus login terlebih dahulu untuk menambahkan cerita.");
+        alert("Silakan login terlebih dahulu sebelum mengunggah cerita.");
         return { success: false };
       }
 
-  if (!description || !photoFile || !lat || !lon) {
-    alert("Semua kolom harus diisi!");
-    return { success: false };
-  }
+      if (!description || !photoFile || !lat || !lon) {
+        alert("Semua kolom wajib diisi, termasuk judul, deskripsi, foto, dan lokasi.");
+        return { success: false };
+      }
 
-  if (!photoFile || photoFile.size === 0) {
-    alert("Foto tidak valid atau kosong.");
-    return { success: false };
-  }
+      if (!photoFile || photoFile.size === 0) {
+        alert("File foto tidak valid atau kosong.");
+        return { success: false };
+      }
 
-  if (this._uiView?.showLoading) this._uiView.showLoading(true);
+      if (this._uiView?.showLoading) {
+        this._uiView.showLoading(true);
+      }
 
-  const { error, message } = await this._apiService.addStory({
-    description,
-    photoFile,
-    lat,
-    lon,
-  });
+      const { error, message } = await this._apiService.addStory({
+        
+        description,
+        photoFile,
+        lat,
+        lon,
+      });
 
       if (error) {
-        alert(`Gagal mengirim cerita: ${message}`);
-        this._uiView?.showLoading(false);
+        alert(`Gagal mengunggah cerita: ${message}`);
+        if (this._uiView?.showLoading) this._uiView.showLoading(false);
         return { success: false };
       }
 
-      alert("Cerita berhasil dibagikan!");
+      alert("Cerita berhasil ditambahkan!");
       return { success: true };
     } catch (err) {
-      alert(`Terjadi kesalahan: ${err.message}`);
-      this._uiView?.showLoading(false);
+      alert(`Terjadi kesalahan saat mengunggah cerita: ${err.message}`);
+      if (this._uiView?.showLoading) this._uiView.showLoading(false);
       return { success: false };
     }
   }
@@ -58,18 +61,15 @@ class StoryUploadHandler {
   }
 
   setupMapPicker(mapElement, locationDisplayElement, onSelect) {
-    const map = L.map(mapElement).setView([-0.789275, 113.921327], 5);
+    const map = L.map(mapElement).setView([-2.548926, 118.0148634], 5);
 
     const baseLayers = {
       Street: L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '&copy; OpenStreetMap contributors',
       }),
-      Satellite: L.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        {
-          attribution: "Tiles &copy; Esri",
-        }
-      ),
+      Satellite: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        attribution: "Tiles &copy; Esri",
+      }),
       Topo: L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
         attribution: '&copy; OpenTopoMap',
       }),
@@ -82,9 +82,10 @@ class StoryUploadHandler {
 
     map.on("click", (e) => {
       const { lat, lng } = e.latlng;
-      const selected = { lat, lng };
 
-      locationDisplayElement.innerHTML = `<p>Lokasi dipilih: ${lat.toFixed(6)}, ${lng.toFixed(6)}</p>`;
+      locationDisplayElement.innerHTML = `
+        <p><strong>Lokasi dipilih:</strong> ${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
+      `;
 
       if (marker) {
         marker.setLatLng([lat, lng]);
@@ -93,7 +94,7 @@ class StoryUploadHandler {
       }
 
       if (onSelect) {
-        onSelect(selected);
+        onSelect({ lat, lng });
       }
     });
 
